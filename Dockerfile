@@ -19,6 +19,8 @@ RUN apk add --no-cache aws-cli
 # Install node and npm
 RUN apk add --update nodejs npm
 RUN npm install -g yarn heroku
+RUN yarn set version 3.2.4
+RUN yarn plugin import @yarnpkg/plugin-workspace-tools
 
 
 # ec2 architect requires `ssh-keygen` util, so we need to install it.
@@ -44,7 +46,7 @@ WORKDIR /mephisto
 RUN pip3 install -e .
 
 RUN yarn install
-RUN yarn build-all
+RUN yarn run build-all
 RUN mephisto metrics install
 
 CMD bash -c "sleep infinity"
