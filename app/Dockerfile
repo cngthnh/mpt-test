@@ -15,6 +15,8 @@ ARG AWS_SECRET_ACCESS_KEY
 
 SHELL ["/bin/bash", "-c"]
 
+RUN chmod -R 777 /mephisto/data
+
 # Set working directory to /app
 WORKDIR /mephisto/app
 
