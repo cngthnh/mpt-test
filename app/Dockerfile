@@ -64,6 +64,6 @@ WORKDIR ..
 RUN mephisto register "$MTURK_TYPE" name="$MTURK_NAME" access_key_id="$MTURK_ACCESS_KEY_ID" secret_access_key="$MTURK_SECRET_ACCESS_KEY"
 RUN mephisto register prolific name=prolific api_key="$PROLIFIC_API_KEY"
 
-CMD yes '/mephisto/data/data/results\n' | yes 'y\n' | python3 deploy.py
+CMD yes '\n' | yes 'y\n' | python3 deploy.py
 
 EXPOSE 3000
