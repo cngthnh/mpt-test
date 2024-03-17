@@ -6,7 +6,11 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
+import { Icon } from '@iconify/react';
+import clsx from 'clsx';
+import axios from 'axios';
+import { toast, ToastContainer } from 'react-toastify';
 
 function OnboardingComponent({onSubmit}) {
   return (
@@ -61,35 +65,79 @@ function Directions({children}) {
 }
 
 function SimpleFrontend({taskData, isOnboarding, onSubmit, onError}) {
-  const [answers, setAnswers] = React.useState({
-    answer1: 'sample1',
-    answer2: '',
-  });
+
+  const [loading, setLoading] = React.useState(false);
+  const [prompt, setPrompt] = React.useState(null);
+  const [analysis, setAnalysis] = React.useState(null);
 
   const handleInputChange = (event) => {
     const {name, value} = event.target;
     setAnswers({...answers, [name]: value});
   };
 
+  const analyze = () => {
+    if (!prompt) {
+      toast.error("You must enter some words as prompt to analyze.")
+      return;
+    }
+    setLoading(true);
+    axios.post("https://dev.api.gpt.dlab-mephisto.com/pygpt", {
+        paragraphs: taskData.data.value,
+        prompt: prompt
+      }, {
+        headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json;charset=UTF-8",
+      }
+    }).then(response => {
+      setAnalysis(response.data);
+      setLoading(false);
+    }).catch(error => {
+      setLoading(false);
+      if (error.response) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("An error occurred while calling our service.")
+      }
+    });
+  };
+
   return (
-      <div style={{padding: '50px'}}>
-        <div className="p-4">
-          <h2 className="text-2xl font-semibold mb-4">This is sample task Jay Huynh 2 Job 1</h2>
-          <div>
-            <label htmlFor="answer2"
-                   className="block text-sm font-medium text-gray-700">Input the number you see here to the box below and submit: <strong>{taskData.data.value}</strong></label>
-            <input
-                type="text"
-                id="answer2"
-                name="answer2"
-                value={answers.answer2}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
-            />
+      <div className="flex gap-4 items-center justify-center flex-wrap" style={{padding: '50px', minHeight: '100vh'}}>
+        <div className="h-full min-w-full w-full md:min-w-0 md:w-1/2 xl:w-1/3 flex flex-col p-4 gap-4 overflow-y-auto" style={{maxHeight: 'calc(100vh - 100px)'}}>
+          {
+            taskData.data.value.map((paragraph, index) => 
+              <div className="card w-full p-4" key={"paragraph-" + index}>
+                {paragraph}
+              </div>
+            )
+          }
+        </div>
+        <div className='flex flex-1 flex-col items-center justify-center gap-4'>
+          <input type="text" placeholder="Enter your prompt here..." className="input input-bordered w-full max-w-xs" onChange={
+            (event) => {
+              setPrompt(event.target.value);
+            }
+          } />
+          <button className={clsx("btn btn-wide gap-2", loading ? 'loading' : '')} onClick={analyze}>
+            {
+              !loading && <Icon className="pointer-events-none" icon="tabler:analyze" width="1.5rem" height="1.5rem" />
+            }
+            Analyze
+          </button>
+          <div className="p-4 rounded-2xl text-center" style={{backgroundColor: '#f7f4ff'}}>
+            <span className={clsx('big-number', analysis && analysis.avg >= 80 ? 'success' : analysis && analysis.avg < 80 ? 'danger' : '')}>
+              {analysis ? analysis.avg : '--'}/
+            </span>
+            <span>100</span>
           </div>
-          <button className="btn btn-outline mt-5" onClick={() => {
-            onSubmit(answers);
-          }}>Submit
+          <button className={clsx("btn btn-primary btn-wide gap-2", !analysis || analysis.avg < 80 ? 'btn-disabled' : '')} onClick={() => {
+              onSubmit({
+                prompt
+              });
+            }}>
+            <Icon icon="formkit:submit" width="1.5rem" height="1.5rem" />
+            Submit
           </button>
         </div>
       </div>

@@ -18,6 +18,8 @@ import {
   useAnnotatorTracker,
   ActivityTrackerDisclosure,
 } from "@annotated/annotator-tracker";
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 /* ================= Application Components ================= */
 
@@ -127,6 +129,7 @@ function MainApp() {
 const root = ReactDOM.createRoot(document.getElementById("app"));
 root.render(
   <React.StrictMode>
+    <ToastContainer hideProgressBar stacked/>
     <MainApp />
   </React.StrictMode>
 );
