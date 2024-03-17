@@ -43,4 +43,8 @@ timeout 1800 \
 
 echo "Matched confirmation: ";
 grep $M_TURK_PREVIEW_URL_PREFIX $LOG_FILE;
+<<<<<<< HEAD
 docker logs $container_id;
+=======
+docker logs $container_id;
+>>>>>>> upstream/deployment

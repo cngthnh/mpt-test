@@ -1,4 +1,5 @@
-/* Copyright (c) Facebook, Inc. and its affiliates.
+/*
+ * Copyright (c) Meta Platforms and its affiliates.
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
@@ -49,6 +50,7 @@ const useMephistoTask = function () {
     blockedReason: null,
     blockedExplanation: null,
     initialTaskData: null,
+    fullData: null,
     isOnboarding: null,
     loaded: false,
   };
@@ -120,6 +122,7 @@ const useMephistoTask = function () {
         mephistoWorkerId: workerId,
         mephistoAgentId: agentId,
         initialTaskData: dataPacket.data.init_task_data,
+        fullData: dataPacket.data,
         loaded: true,
       });
     }
@@ -138,6 +141,7 @@ const useMephistoTask = function () {
     handleSubmit,
     handleMetadataSubmit,
     handleFatalError,
+    getAgentRegistration,
   };
 };
 

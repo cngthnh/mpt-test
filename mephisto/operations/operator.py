@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright (c) Facebook, Inc. and its affiliates.
+# Copyright (c) Meta Platforms and its affiliates.
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
@@ -430,6 +430,8 @@ class Operator:
                     f"Waiting on {len(remaining_runs)} task runs with assignments in-flight. "
                     f"{format_loud('Ctrl-C ONCE')} to kill running tasks and FORCE QUIT."
                 )
+                logger.info(f"Raise KeyboardInterrupt to force quit.")
+                raise KeyboardInterrupt
                 next_runs = []
                 for tracked_run in remaining_runs:
                     if tracked_run.task_run.get_is_completed():

@@ -17,15 +17,17 @@ from rich import print
 from omegaconf import DictConfig
 import post_deployment_hook as post
 import pre_deployment_hook as pre
-import os
+import os, signal
 
 env = os.environ.get("APP_ENV", "")
 
 default_config_file = "dev.yaml"
+# default_config_file = "dev_ec2.yaml"
 if env == "prod":
     # default_config_file = "prod.yaml"
     default_config_file = "prod_prolific.yaml"
 elif env == "test" or env == "sb":
+    # default_config_file = "test.yaml"
     default_config_file = "test_prolific.yaml"
 
 
@@ -81,5 +83,11 @@ def main(operator: Operator, cfg: DictConfig) -> None:
     finally:
         post.handle()
 
+def shutdown(signum, frame):
+    print('Caught SIGTERM, shutting down')
+    # Finish any outstanding requests, then...
+    exit(0)
+
 if __name__ == "__main__":
+    signal.signal(signal.SIGTERM, shutdown)
     main()
