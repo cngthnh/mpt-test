@@ -127,7 +127,7 @@ function SimpleFrontend({taskData, isOnboarding, onSubmit, onError}) {
           </button>
           <div className="p-4 rounded-2xl text-center" style={{backgroundColor: '#f7f4ff'}}>
             <span className={clsx('big-number', analysis && analysis.avg >= 80 ? 'success' : analysis && analysis.avg < 80 ? 'danger' : '')}>
-              {analysis ? analysis.avg : '--'}/
+              {analysis ? analysis.avg.toFixed(2) : '--'}/
             </span>
             <span>100</span>
           </div>
